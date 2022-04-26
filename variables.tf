@@ -3,7 +3,7 @@ locals {
 }
 
 variable "project" {
-  description = "certain-mission-347914-92204e06f95e"
+  default = "certain-mission-347914-92204e06f95e"
 }
 
 variable "region" {
