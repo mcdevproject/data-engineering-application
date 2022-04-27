@@ -3,6 +3,7 @@ locals {
 }
 
 variable "project" {
+  description = "Your GCP Project ID"
   default = "certain-mission-347914-92204e06f95e"
 }
 
