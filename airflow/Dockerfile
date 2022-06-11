@@ -10,6 +10,7 @@ RUN apt-get update -qq && apt-get install vim -qqq
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install yfinance --upgrade --no-cache-dir
 
 # Ref: https://airflow.apache.org/docs/docker-stack/recipes.html
 
