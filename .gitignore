@@ -1,4 +1,6 @@
-certain-mission-347914-92204e06f95e.json
+airflow/dags/__pycache__
+airflow/logs
+airflow/.env
 docker/.ipynb_checkpoints
 docker/ny_taxi_data_set
 docker/venv

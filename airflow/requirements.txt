@@ -1,0 +1,7 @@
+apache-airflow-providers-google
+pyarrow
+pandas
+sqlalchemy
+psycopg2
+
+yfinance
