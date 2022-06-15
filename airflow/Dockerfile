@@ -1,6 +1,6 @@
 # First-time build can take upto 10 mins.
 
-FROM apache/airflow:2.2.3
+FROM apache/airflow:2.3.2
 
 ENV AIRFLOW_HOME=/opt/airflow
 
@@ -9,8 +9,12 @@ RUN apt-get update -qq && apt-get install vim -qqq
 # git gcc g++ -qqq
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install yfinance --upgrade --no-cache-dir
+RUN python3 -m pip install --upgrade pip setuptools wheel                                                                                                                                                                                                
+RUN python3 -m pip install -r requirements.txt  
+
+#COPY requirements.txt .
+#RUN pip install --no-cache-dir -r requirements.txt
+#RUN pip install yfinance --upgrade --no-cache-dir
 
 # Ref: https://airflow.apache.org/docs/docker-stack/recipes.html
 

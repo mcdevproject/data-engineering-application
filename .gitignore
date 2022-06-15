@@ -1,4 +1,5 @@
 airflow/dags/__pycache__
+airflow/dags/src/__pycache__
 airflow/logs
 airflow/.env
 docker/.ipynb_checkpoints
