@@ -70,6 +70,7 @@ x-airflow-common:
     PG_PASSWORD: ${PG_PASSWORD}
     PG_PORT: ${PG_PORT}
     PG_DATABASE: ${PG_DATABASE}
+    NEWS_API_KEYS: ${NEWS_API_KEYS}
 
   volumes:
     - ./dags:/opt/airflow/dags

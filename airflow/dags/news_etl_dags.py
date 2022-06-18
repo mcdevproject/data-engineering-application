@@ -58,20 +58,36 @@ def _main_extract_and_transform(tickers, ti):
 
     return None
 
-def _main_load():
+def _main_load(bucket, ti):
+    # WORKAROUND to prevent timeout for files > 6 MB on 800 kbps upload speed.
+    # (Ref: https://github.com/googleapis/python-storage/issues/74)
+    storage.blob._MAX_MULTIPART_SIZE = 5 * 1024 * 1024  # 5 MB
+    storage.blob._DEFAULT_CHUNKSIZE = 5 * 1024 * 1024  # 5 MB
+    # End of Workaround
+
+    object_name = ti.xcom_pull(key='csv_location', task_ids='extract_and_transform')
+    local_file = f"{LOCAL_DATA_COLLECTION_FOLDER}/{object_name}"
+
+    client = storage.Client()
+    bucket = client.bucket(bucket)
+
+    blob = bucket.blob(object_name)
+    blob.upload_from_filename(local_file)
+
     return None
 
 default_args = {
     "owner": "airflow",
     "retries": 3,
     'retry_delay': timedelta(minutes=5),
-    "start_date": datetime(2022,6,15)
+    "start_date": datetime(2022,1,1)
 }
 
 with DAG(
     dag_id="get_news_headlines",
     default_args=default_args,
-    schedule_interval="05 08-20 * * 1-5",
+    catchup=False,
+    schedule_interval="05 04-20 * * 1-5",
 ) as dag:
 
     get_triggering_date = BashOperator(
@@ -91,15 +107,21 @@ with DAG(
         task_id='check_market_close')"""
     
     create_today_folder = BashOperator(
-        task_id = 'create_today_folder',
-        bash_command = command_for_create_today_folder,
-        do_xcom_push = False
+        task_id='create_today_folder',
+        bash_command=command_for_create_today_folder,
+        do_xcom_push=False
     )
 
     extract_and_transform = PythonOperator(
-        task_id = 'extract_and_transform',
+        task_id='extract_and_transform',
         python_callable=_main_extract_and_transform,
         op_kwargs={"tickers": TICKER_LIST}
     )
     
-    get_triggering_date >> get_triggering_time >> create_today_folder >> extract_and_transform
+    load_to_gcs = PythonOperator(
+        task_id="load_to_gcs",
+        python_callable=_main_load,
+        op_kwargs={'bucket': BUCKET}
+    )
+
+    get_triggering_date >> get_triggering_time >> create_today_folder >> extract_and_transform >> load_to_gcs

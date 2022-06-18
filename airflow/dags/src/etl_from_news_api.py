@@ -7,7 +7,7 @@ from .etl_from_api_endpoint import BaseETL
 logging.getLogger().setLevel(logging.INFO)
 
 ## NOTE: move the key to .env and os.environ.get
-newsapi_key = "2cf410db922842c3b0a3f15dfa44605a"
+newsapi_key = os.environ.get("NEWS_API_KEYS")
 
 # Inherited from ETL general class -- now we extract and transform the data getting from NewsAPI
 class NewsETL(BaseETL):
